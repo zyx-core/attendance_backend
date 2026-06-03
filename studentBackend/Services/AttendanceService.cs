@@ -13,7 +13,8 @@ namespace StudentAttendance.Services
             _context = context;
         }
 
-        public async Task<AttendanceResponseDto> MarkAttendanceAsync(CreateAttendanceDto dto)
+        public async Task<AttendanceResponseDto> MarkAttendanceAsync(
+            CreateAttendanceDto dto)
         {
             var exists = await _context.Attendances
                 .AnyAsync(a =>
@@ -22,7 +23,8 @@ namespace StudentAttendance.Services
 
             if (exists)
             {
-                throw new Exception("Attendance already marked for this date.");
+                throw new Exception(
+                    "Attendance already marked for this date.");
             }
 
             var attendance = new Attendance
@@ -34,6 +36,7 @@ namespace StudentAttendance.Services
             };
 
             _context.Attendances.Add(attendance);
+
             await _context.SaveChangesAsync();
 
             return new AttendanceResponseDto
@@ -46,7 +49,27 @@ namespace StudentAttendance.Services
             };
         }
 
-        public async Task<IEnumerable<AttendanceResponseDto>> GetAttendanceHistoryAsync(int studentId)
+        public async Task<bool> UpdateAttendanceAsync(
+            int id,
+            CreateAttendanceDto dto)
+        {
+            var attendance =
+                await _context.Attendances.FindAsync(id);
+
+            if (attendance == null)
+                return false;
+
+            attendance.Date = dto.Date;
+            attendance.IsPresent = dto.IsPresent;
+            attendance.Remarks = dto.Remarks;
+
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<IEnumerable<AttendanceResponseDto>>
+            GetAttendanceHistoryAsync(int studentId)
         {
             return await _context.Attendances
                 .Where(a => a.StudentId == studentId)
@@ -62,7 +85,8 @@ namespace StudentAttendance.Services
                 .ToListAsync();
         }
 
-        public async Task<double> GetAttendancePercentageAsync(int studentId)
+        public async Task<double>
+            GetAttendancePercentageAsync(int studentId)
         {
             var totalDays = await _context.Attendances
                 .CountAsync(a => a.StudentId == studentId);
@@ -75,7 +99,65 @@ namespace StudentAttendance.Services
                     a.StudentId == studentId &&
                     a.IsPresent);
 
-            return Math.Round((double)presentDays / totalDays * 100, 2);
+            return Math.Round(
+                (double)presentDays / totalDays * 100,
+                2);
+        }
+
+        public async Task<double>
+            GetClassAttendanceAverageAsync()
+        {
+            var totalRecords =
+                await _context.Attendances.CountAsync();
+
+            if (totalRecords == 0)
+                return 0;
+
+            var presentRecords =
+                await _context.Attendances
+                    .CountAsync(a => a.IsPresent);
+
+            return Math.Round(
+                (double)presentRecords /
+                totalRecords * 100,
+                2);
+        }
+
+        public async Task<object>
+            GetDailyReportAsync(DateTime date)
+        {
+            var records = await _context.Attendances
+                .Where(a => a.Date.Date == date.Date)
+                .ToListAsync();
+
+            return new
+            {
+                Date = date,
+                TotalStudents = records.Count,
+                Present = records.Count(x => x.IsPresent),
+                Absent = records.Count(x => !x.IsPresent)
+            };
+        }
+
+        public async Task<object>
+            GetMonthlyReportAsync(
+                int month,
+                int year)
+        {
+            var records = await _context.Attendances
+                .Where(a =>
+                    a.Date.Month == month &&
+                    a.Date.Year == year)
+                .ToListAsync();
+
+            return new
+            {
+                Month = month,
+                Year = year,
+                TotalRecords = records.Count,
+                Present = records.Count(x => x.IsPresent),
+                Absent = records.Count(x => !x.IsPresent)
+            };
         }
     }
 }

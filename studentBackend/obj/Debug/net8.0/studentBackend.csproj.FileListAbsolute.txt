@@ -208,3 +208,8 @@ C:\Team_project\attendance_backend\studentBackend\obj\Debug\net8.0\scopedcss\bun
 C:\Team_project\attendance_backend\studentBackend\obj\Debug\net8.0\studentB.82B5BA23.Up2Date
 C:\Team_project\attendance_backend\studentBackend\obj\Debug\net8.0\studentBackend.genruntimeconfig.cache
 C:\Team_project\attendance_backend\studentBackend\obj\Debug\net8.0\ref\studentBackend.dll
+C:\Team_project\attendance_backend\studentBackend\bin\Debug\net8.0\Microsoft.OpenApi.dll
+C:\Team_project\attendance_backend\studentBackend\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Team_project\attendance_backend\studentBackend\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Team_project\attendance_backend\studentBackend\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Team_project\attendance_backend\studentBackend\obj\Debug\net8.0\studentBackend.MvcApplicationPartsAssemblyInfo.cs

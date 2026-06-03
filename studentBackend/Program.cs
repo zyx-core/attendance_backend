@@ -7,36 +7,62 @@ var builder = WebApplication.CreateBuilder(args);
 
 // ===== 1. Database Context Registration =====
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+    options.UseMySql(
+        connectionString,
+        ServerVersion.AutoDetect(connectionString)
+    ));
 
 // ===== 2. Controller & Routing Services =====
 builder.Services.AddControllers();
 
-// ===== 3. Service Registrations =====
+// ===== 3. Swagger Services =====
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// ===== 4. Service Registrations =====
 builder.Services.AddScoped<ILeaveService, LeaveService>();
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 
-// ===== 4. Basic Auth & Authorization Layout =====
-// Keeping placeholders matching the policies you have configured on your Controller
+// ===== 5. Basic Auth & Authorization Layout =====
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("TeacherOnly", policy => policy.RequireAssertion(_ => true)); // Temporary bypass for local testing
-    options.AddPolicy("AllRoles", policy => policy.RequireAssertion(_ => true));   // Temporary bypass for local testing
+    options.AddPolicy("TeacherOnly",
+        policy => policy.RequireAssertion(_ => true));
+
+    options.AddPolicy("AllRoles",
+        policy => policy.RequireAssertion(_ => true));
 });
 
 var app = builder.Build();
 
-// ===== 5. HTTP Pipeline Configuration =====
+// ===== 6. HTTP Pipeline Configuration =====
 if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+
+    // Swagger
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 }
 
-app.UseHttpsRedirection();
+app.UseSwagger();
+app.UseSwaggerUI();
 
-// Maps controller routes so 'api/Leave' endpoints can be reached
+app.UseHttpsRedirection();
+app.UseAuthorization();
 app.MapControllers();
 
-// ===== 6. Execution Loop =====
+app.UseHttpsRedirection();
+
+app.UseAuthorization();
+
+// Maps controller routes
+app.MapControllers();
+
+// ===== 7. Execution Loop =====
 app.Run();
