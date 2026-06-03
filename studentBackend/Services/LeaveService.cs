@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using StudentAttendance.Data; // Ensure this points to where your AppDbContext lives
+using StudentAttendance.Models;
 using StudentAttendance.DTOs;
 using StudentAttendance.Models;
 
