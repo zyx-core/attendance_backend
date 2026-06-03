@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\attendence_mnagement\\backend\\studentBackend\\studentBackend.csproj": {}
+    "C:\\Users\\jonadh.ef\\OneDrive - NeST Group\\Documents\\codes\\SAMS\\backend\\attendance_backend\\studentBackend\\studentBackend.csproj": {}
   },
   "projects": {
-    "D:\\attendence_mnagement\\backend\\studentBackend\\studentBackend.csproj": {
+    "C:\\Users\\jonadh.ef\\OneDrive - NeST Group\\Documents\\codes\\SAMS\\backend\\attendance_backend\\studentBackend\\studentBackend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\attendence_mnagement\\backend\\studentBackend\\studentBackend.csproj",
+        "projectUniqueName": "C:\\Users\\jonadh.ef\\OneDrive - NeST Group\\Documents\\codes\\SAMS\\backend\\attendance_backend\\studentBackend\\studentBackend.csproj",
         "projectName": "studentBackend",
-        "projectPath": "D:\\attendence_mnagement\\backend\\studentBackend\\studentBackend.csproj",
-        "packagesPath": "C:\\Users\\ershad.s\\.nuget\\packages\\",
-        "outputPath": "D:\\attendence_mnagement\\backend\\studentBackend\\obj\\",
+        "projectPath": "C:\\Users\\jonadh.ef\\OneDrive - NeST Group\\Documents\\codes\\SAMS\\backend\\attendance_backend\\studentBackend\\studentBackend.csproj",
+        "packagesPath": "C:\\Users\\jonadh.ef\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\jonadh.ef\\OneDrive - NeST Group\\Documents\\codes\\SAMS\\backend\\attendance_backend\\studentBackend\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\ershad.s\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\jonadh.ef\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -48,6 +48,16 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.11, )"
+            },
+            "Pomelo.EntityFrameworkCore.MySql": {
+              "target": "Package",
+              "version": "[8.0.2, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -60,6 +70,9 @@
           "assetTargetFallback": true,
           "warn": true,
           "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
