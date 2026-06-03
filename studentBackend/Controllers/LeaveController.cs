@@ -18,7 +18,7 @@ namespace StudentAttendance.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "AllRoles")] // Parent, Teacher, or Admin[cite: 1]
+        [Authorize(Policy = "AllRoles")] 
         public async Task<IActionResult> CreateLeave([FromBody] CreateLeaveRequestDto dto)
         {
             if (!ModelState.IsValid)
@@ -31,7 +31,7 @@ namespace StudentAttendance.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = "TeacherOnly")] // Only Teachers and Admins[cite: 1]
+        [Authorize(Policy = "TeacherOnly")] 
         public async Task<IActionResult> GetLeaves()
         {
             var result = await _leaveService.GetAllLeavesAsync();
