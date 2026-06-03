@@ -15,9 +15,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var frontendOriginsValue = Environment.GetEnvironmentVariable("FRONTEND_ORIGINS") ?? "http://localhost:4200";
-var frontendOrigins = frontendOriginsValue
+var configuredFrontendOrigins = (Environment.GetEnvironmentVariable("FRONTEND_ORIGINS") ?? string.Empty)
     .Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+var frontendOrigins = configuredFrontendOrigins
+    .Append("http://localhost:4200")
+    .Append("http://127.0.0.1:4200")
+    .Distinct(StringComparer.OrdinalIgnoreCase)
+    .ToArray();
 
 builder.Services.AddCors(options =>
 {
@@ -73,6 +78,6 @@ app.UseSwaggerUI(options =>
 });
 
 app.UseCors("FrontendPolicy");
-app.MapControllers();
+app.MapControllers().RequireCors("FrontendPolicy");
 
 app.Run();

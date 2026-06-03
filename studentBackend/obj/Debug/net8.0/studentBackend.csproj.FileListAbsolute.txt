@@ -31,8 +31,6 @@ C:\Users\jonadh.ef\OneDrive - NeST Group\Documents\codes\SAMS\backend\attendance
 C:\Users\jonadh.ef\OneDrive - NeST Group\Documents\codes\SAMS\backend\attendance_backend\studentBackend\obj\Debug\net8.0\studentBackend.genruntimeconfig.cache
 C:\Users\jonadh.ef\OneDrive - NeST Group\Documents\codes\SAMS\backend\attendance_backend\studentBackend\obj\Debug\net8.0\ref\studentBackend.dll
 C:\Users\jonadh.ef\OneDrive - NeST Group\Documents\codes\SAMS\backend\attendance_backend\studentBackend\obj\Debug\net8.0\studentBackend.MvcApplicationPartsAssemblyInfo.cs
-C:\Users\jonadh.ef\OneDrive - NeST Group\Documents\codes\SAMS\backend\attendance_backend\studentBackend\bin\Debug\net8.0\AutoMapper.dll
-C:\Users\jonadh.ef\OneDrive - NeST Group\Documents\codes\SAMS\backend\attendance_backend\studentBackend\bin\Debug\net8.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 C:\Users\jonadh.ef\OneDrive - NeST Group\Documents\codes\SAMS\backend\attendance_backend\studentBackend\bin\Debug\net8.0\BCrypt.Net-Next.dll
 C:\Users\jonadh.ef\OneDrive - NeST Group\Documents\codes\SAMS\backend\attendance_backend\studentBackend\bin\Debug\net8.0\FluentValidation.dll
 C:\Users\jonadh.ef\OneDrive - NeST Group\Documents\codes\SAMS\backend\attendance_backend\studentBackend\bin\Debug\net8.0\FluentValidation.AspNetCore.dll
