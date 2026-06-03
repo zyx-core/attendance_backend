@@ -1,0 +1,42 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.vs/
+.vscode/
+*.swp
+*.*~
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+build/
+bld/
+
+## NuGet
+*.nupkg
+**/packages/*
+*.nuget.props
+*.nuget.targets
+project.lock.json
+
+## ASP.NET
+appsettings.*.local.json
+
+## Angular / Node
+node_modules/
+dist/
+.angular/
+npm-debug.log
+yarn-error.log
+.env
+
+## OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
