@@ -1,0 +1,5 @@
+D:\attendence_mnagement\backend1\studentBackend\obj\Debug\net8.0\studentBackend.GeneratedMSBuildEditorConfig.editorconfig
+D:\attendence_mnagement\backend1\studentBackend\obj\Debug\net8.0\studentBackend.AssemblyInfoInputs.cache
+D:\attendence_mnagement\backend1\studentBackend\obj\Debug\net8.0\studentBackend.AssemblyInfo.cs
+D:\attendence_mnagement\backend1\studentBackend\obj\Debug\net8.0\studentBackend.csproj.CoreCompileInputs.cache
+D:\attendence_mnagement\backend1\studentBackend\obj\Debug\net8.0\studentBackend.sourcelink.json

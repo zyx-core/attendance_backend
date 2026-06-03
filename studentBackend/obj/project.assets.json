@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\attendence_mnagement\\backend\\studentBackend\\studentBackend.csproj",
+      "projectUniqueName": "D:\\attendence_mnagement\\backend1\\studentBackend\\studentBackend.csproj",
       "projectName": "studentBackend",
-      "projectPath": "D:\\attendence_mnagement\\backend\\studentBackend\\studentBackend.csproj",
+      "projectPath": "D:\\attendence_mnagement\\backend1\\studentBackend\\studentBackend.csproj",
       "packagesPath": "C:\\Users\\ershad.s\\.nuget\\packages\\",
-      "outputPath": "D:\\attendence_mnagement\\backend\\studentBackend\\obj\\",
+      "outputPath": "D:\\attendence_mnagement\\backend1\\studentBackend\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
