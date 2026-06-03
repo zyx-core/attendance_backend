@@ -15,6 +15,7 @@ builder.Services.AddControllers();
 
 // ===== 3. Service Registrations =====
 builder.Services.AddScoped<ILeaveService, LeaveService>();
+builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 
 // ===== 4. Basic Auth & Authorization Layout =====
 // Keeping placeholders matching the policies you have configured on your Controller

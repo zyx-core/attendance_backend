@@ -2152,23 +2152,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\ershad.s\\.nuget\\packages\\": {},
+    "C:\\Users\\arjun.c\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\attendence_mnagement\\backend1\\studentBackend\\studentBackend.csproj",
+      "projectUniqueName": "C:\\Team_project\\attendance_backend\\studentBackend\\studentBackend.csproj",
       "projectName": "studentBackend",
-      "projectPath": "D:\\attendence_mnagement\\backend1\\studentBackend\\studentBackend.csproj",
-      "packagesPath": "C:\\Users\\ershad.s\\.nuget\\packages\\",
-      "outputPath": "D:\\attendence_mnagement\\backend1\\studentBackend\\obj\\",
+      "projectPath": "C:\\Team_project\\attendance_backend\\studentBackend\\studentBackend.csproj",
+      "packagesPath": "C:\\Users\\arjun.c\\.nuget\\packages\\",
+      "outputPath": "C:\\Team_project\\attendance_backend\\studentBackend\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\ershad.s\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\arjun.c\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
