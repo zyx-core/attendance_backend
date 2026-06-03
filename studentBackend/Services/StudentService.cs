@@ -43,7 +43,7 @@ public class StudentService
             ClassName = studentCreateDto.ClassName.Trim(),
             Division = studentCreateDto.Division.Trim(),
             StudentEmail = studentCreateDto.StudentEmail.Trim(),
-            DateOfBirth = studentCreateDto.DateOfBirth,
+            DateOfBirth = studentCreateDto.DateOfBirth.ToDateTime(TimeOnly.MinValue),
             PhotoUrl = string.IsNullOrWhiteSpace(studentCreateDto.PhotoUrl) ? null : studentCreateDto.PhotoUrl.Trim(),
             ParentId = studentCreateDto.ParentId,
             IsActive = studentCreateDto.IsActive,
@@ -71,7 +71,7 @@ public class StudentService
         student.ClassName = studentUpdateDto.ClassName.Trim();
         student.Division = studentUpdateDto.Division.Trim();
         student.StudentEmail = studentUpdateDto.StudentEmail.Trim();
-        student.DateOfBirth = studentUpdateDto.DateOfBirth;
+        student.DateOfBirth = studentUpdateDto.DateOfBirth.ToDateTime(TimeOnly.MinValue);
         student.PhotoUrl = string.IsNullOrWhiteSpace(studentUpdateDto.PhotoUrl) ? null : studentUpdateDto.PhotoUrl.Trim();
         student.ParentId = studentUpdateDto.ParentId;
         student.IsActive = studentUpdateDto.IsActive;
@@ -147,9 +147,9 @@ public class StudentService
             ClassName = student.ClassName,
             Division = student.Division,
             StudentEmail = student.StudentEmail,
-            DateOfBirth = student.DateOfBirth,
+            DateOfBirth = DateOnly.FromDateTime(student.DateOfBirth),
             PhotoUrl = student.PhotoUrl,
-            ParentId = student.ParentId,
+            ParentId = student.ParentId ?? 0,
             IsActive = student.IsActive,
             CreatedAt = student.CreatedAt,
             UpdatedAt = student.UpdatedAt
