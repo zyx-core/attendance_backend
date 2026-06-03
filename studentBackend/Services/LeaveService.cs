@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using StudentAttendance.Models;
 using StudentAttendance.DTOs;
-using StudentAttendance.Models;
 
 namespace StudentAttendance.Services
 {
