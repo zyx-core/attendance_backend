@@ -3,7 +3,7 @@ using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
+using Microsoft.OpenApi.Models;        // Fixed: was using Microsoft.OpenApi
 using StudentAttendance.Models;
 using StudentAttendance.Services;
 
@@ -11,15 +11,15 @@ Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Database Configuration
 var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
-
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(
         connectionString,
         ServerVersion.AutoDetect(connectionString)
     ));
 
-// CORS
+// CORS Policy
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -30,11 +30,11 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Controllers
+// Controllers & API Explorer
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-// Swagger with JWT support
+// Swagger with JWT Support
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -92,36 +92,34 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// Authorization
+// Authorization Policies
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("TeacherOnly",
-        policy => policy.RequireAssertion(_ => true));
-
-    options.AddPolicy("AllRoles",
-        policy => policy.RequireAssertion(_ => true));
+    options.AddPolicy("TeacherOnly", policy => policy.RequireAssertion(_ => true));
+    options.AddPolicy("AllRoles", policy => policy.RequireAssertion(_ => true));
 });
 
 var app = builder.Build();
 
-// Middleware
+// Middleware Pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+else
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
-app.UseSwagger();
-app.UseSwaggerUI();
-
-// app.UseHttpsRedirection();
-
+// app.UseHttpsRedirection();   // Uncomment if using HTTPS in production
 app.UseCors("AllowAll");
-
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
 app.MapGet("/", () => "Attendance API is running successfully!");
 
 app.Run();

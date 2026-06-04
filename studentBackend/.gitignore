@@ -1,1 +1,33 @@
+# Build outputs
+/bin
+/obj
+
+# Visual Studio
+/.vs
+
+# Environment variables (important for security)
 .env
+
+# Logs
+*.log
+logs/
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+
+# IDE and editor files
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Database migrations (if you want to ignore them - optional)
+# Migrations/
+
+# Other common ignores
+.DS_Store
+Thumbs.db
