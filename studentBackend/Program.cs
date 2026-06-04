@@ -12,6 +12,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // ===== 2. Controller & Routing Services =====
 builder.Services.AddControllers();
+builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 
 // ===== 3. Service Registrations =====
 builder.Services.AddScoped<ILeaveService, LeaveService>();
