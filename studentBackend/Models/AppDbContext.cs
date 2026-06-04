@@ -8,12 +8,12 @@ namespace StudentAttendance.Models
         {
         }
 
-        // Register your LeaveRequest model so EF Core creates the table
         public DbSet<LeaveRequest> LeaveRequests { get; set; }
         public DbSet<Attendance> Attendances { get; set; }
         public DbSet<Student> Students { get; set; }
-
-        // Note: As you build out your application, you will add your other models here, like:
-        // public DbSet<Attendance> Attendances { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<ParentInvitation> ParentInvitations { get; set; }
+        public DbSet<ParentStudent> ParentStudent { get; set; }
+        public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
     }
 }
