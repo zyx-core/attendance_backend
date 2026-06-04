@@ -1,0 +1,7 @@
+# Compiled build outputs
+studentBackend/bin/
+studentBackend/obj/
+*.dll
+*.exe
+*.pdb
+*.cache

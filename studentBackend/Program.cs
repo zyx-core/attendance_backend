@@ -8,50 +8,60 @@ var builder = WebApplication.CreateBuilder(args);
 // ===== 1. Database Context Registration =====
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+    options.UseMySql(
+        connectionString, 
+        ServerVersion.AutoDetect(connectionString)
+    ));
 
 // ===== 2. Controller & Routing Services =====
 builder.Services.AddControllers();
-builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 
-// ===== 3. Service Registrations =====
+// ===== 3. Swagger Services (For Local Endpoint Testing) =====
+builder.Services.AddEndpointsApiExplorer();
+
+
+// ===== 4. Core System Service Registrations =====
 builder.Services.AddScoped<ILeaveService, LeaveService>();
 
-// ===== 4. Basic Auth & Authorization Layout =====
-// Keeping placeholders matching the policies you have configured on your Controller
+builder.Services.AddScoped<IAnalyticsService, AnalyticsService>(); // Retained analytics setup
+
+// ===== 5. Authorization Policies =====
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("TeacherOnly", policy => policy.RequireAssertion(_ => true)); // Temporary bypass for local testing
-    options.AddPolicy("AllRoles", policy => policy.RequireAssertion(_ => true));   // Temporary bypass for local testing
+    options.AddPolicy("TeacherOnly", policy => policy.RequireAssertion(_ => true)); // Local testing placeholder bypass
+    options.AddPolicy("AllRoles", policy => policy.RequireAssertion(_ => true));   // Local testing placeholder bypass
 });
 
-// ===== ADD THIS CORS DEFINITION BLOCK =====
+// ===== 6. CORS Policy Registration =====
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularFrontend",
         policy =>
         {
-            policy.WithOrigins("http://localhost:4200") // Matches your frontend origin perfectly
+            policy.WithOrigins("http://localhost:4200")
                   .AllowAnyHeader()
                   .AllowAnyMethod()
-                  .AllowCredentials(); // Crucial for cookie/session/token headers
+                  .AllowCredentials();
         });
 });
 
 var app = builder.Build();
 
-// ===== 5. HTTP Pipeline Configuration =====
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-}
+// ===== 7. HTTP Pipeline Configuration =====
+
 
 app.UseHttpsRedirection();
 
-// Maps controller routes so 'api/Leave' endpoints can be reached
-app.MapControllers();
+// CRITICAL CORRECT MIDDLEWARE ORDERING:
+app.UseRouting();
 
+// UseCors MUST always execute after routing but BEFORE mapping controllers and authorization pipelines
 app.UseCors("AllowAngularFrontend");
 
-// ===== 6. Execution Loop =====
+app.UseAuthorization();
+
+// Maps API endpoint routing matrices (e.g., api/Leave and api/Analytics)
+app.MapControllers();
+
+// ===== 8. Execution Loop =====
 app.Run();
