@@ -25,6 +25,19 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("AllRoles", policy => policy.RequireAssertion(_ => true));   // Temporary bypass for local testing
 });
 
+// ===== ADD THIS CORS DEFINITION BLOCK =====
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularFrontend",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200") // Matches your frontend origin perfectly
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials(); // Crucial for cookie/session/token headers
+        });
+});
+
 var app = builder.Build();
 
 // ===== 5. HTTP Pipeline Configuration =====
@@ -37,6 +50,8 @@ app.UseHttpsRedirection();
 
 // Maps controller routes so 'api/Leave' endpoints can be reached
 app.MapControllers();
+
+app.UseCors("AllowAngularFrontend");
 
 // ===== 6. Execution Loop =====
 app.Run();
