@@ -1,66 +1,77 @@
 using System.Text;
+using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using StudentAttendance.Models;
 using StudentAttendance.Services;
-using DotNetEnv;
 
 Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ===== 1. Database Context Registration =====
 var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-// ===== 2. Controller, CORS & Routing Services =====
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseMySql(
+        connectionString,
+        ServerVersion.AutoDetect(connectionString)
+    ));
+
+// CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", builder =>
+    options.AddPolicy("AllowAll", policy =>
     {
-        builder.AllowAnyOrigin()
-               .AllowAnyMethod()
-               .AllowAnyHeader();
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
     });
 });
+
+// Controllers
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
+// Swagger with JWT support
 builder.Services.AddSwaggerGen(c =>
 {
-    c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
-        Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+        Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer",
         BearerFormat = "JWT",
-        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-        Description = "Enter 'Bearer' [space] and then your valid token in the text input below.\n\nExample: \"Bearer eyJhbG...\""
+        In = ParameterLocation.Header,
+        Description = "Enter: Bearer your_token_here"
     });
-    c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
-            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            new OpenApiSecurityScheme
             {
-                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                Reference = new OpenApiReference
                 {
-                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Type = ReferenceType.SecurityScheme,
                     Id = "Bearer"
                 }
             },
-            new string[] {}
+            Array.Empty<string>()
         }
     });
 });
 
-// ===== 3. Service Registrations =====
+// Services
 builder.Services.AddScoped<ILeaveService, LeaveService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 
-// ===== 4. Basic Auth & Authorization Layout =====
-var secretKey = Environment.GetEnvironmentVariable("JWT_SECRET") ?? "this_is_a_fallback_secret_key_that_must_be_long_enough_for_hmac_sha256";
+// JWT Authentication
+var secretKey = Environment.GetEnvironmentVariable("JWT_SECRET")
+    ?? "this_is_a_fallback_secret_key_that_must_be_long_enough_for_hmac_sha256";
+
 var key = Encoding.ASCII.GetBytes(secretKey);
 
 builder.Services.AddAuthentication(options =>
@@ -81,16 +92,19 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// Keeping placeholders matching the policies you have configured on your Controller
+// Authorization
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("TeacherOnly", policy => policy.RequireAssertion(_ => true)); // Temporary bypass for local testing
-    options.AddPolicy("AllRoles", policy => policy.RequireAssertion(_ => true));   // Temporary bypass for local testing
+    options.AddPolicy("TeacherOnly",
+        policy => policy.RequireAssertion(_ => true));
+
+    options.AddPolicy("AllRoles",
+        policy => policy.RequireAssertion(_ => true));
 });
 
 var app = builder.Build();
 
-// ===== 5. HTTP Pipeline Configuration =====
+// Middleware
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
@@ -106,11 +120,8 @@ app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Maps controller routes so 'api/Leave' endpoints can be reached
 app.MapControllers();
 
-// Add a default route so you can test localhost easily in your browser
 app.MapGet("/", () => "Attendance API is running successfully!");
 
-// ===== 6. Execution Loop =====
 app.Run();

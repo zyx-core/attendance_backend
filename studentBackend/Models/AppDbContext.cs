@@ -14,5 +14,6 @@ namespace StudentAttendance.Models
         public DbSet<ParentInvitation> ParentInvitations { get; set; }
         public DbSet<ParentStudent> ParentStudent { get; set; }
         public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
+
     }
 }
