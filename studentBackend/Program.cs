@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using Microsoft.EntityFrameworkCore;
 using StudentAttendance.Models;
 using StudentAttendance.Services;
@@ -16,6 +16,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // ===== 2. Controller & Routing Services =====
 builder.Services.AddControllers();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 // ===== 3. Swagger Services =====
 builder.Services.AddEndpointsApiExplorer();
@@ -41,28 +50,16 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-
-    // Swagger
     app.UseSwagger();
     app.UseSwaggerUI();
-}if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
 }
 
-app.UseSwagger();
-app.UseSwaggerUI();
-
-app.UseHttpsRedirection();
-app.UseAuthorization();
-app.MapControllers();
+app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-// Maps controller routes
 app.MapControllers();
 
-// ===== 7. Execution Loop =====
 app.Run();
