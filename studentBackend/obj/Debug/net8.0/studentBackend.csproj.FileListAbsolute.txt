@@ -1,14 +1,13 @@
-D:\attendence_mnagement\backend1\studentBackend\obj\Debug\net8.0\studentBackend.GeneratedMSBuildEditorConfig.editorconfig
-D:\attendence_mnagement\backend1\studentBackend\obj\Debug\net8.0\studentBackend.AssemblyInfoInputs.cache
-D:\attendence_mnagement\backend1\studentBackend\obj\Debug\net8.0\studentBackend.AssemblyInfo.cs
-D:\attendence_mnagement\backend1\studentBackend\obj\Debug\net8.0\studentBackend.csproj.CoreCompileInputs.cache
-D:\attendence_mnagement\backend1\studentBackend\obj\Debug\net8.0\studentBackend.sourcelink.json
+D:\attendence_mnagement\backend1\studentBackend\bin\Debug\net8.0\appsettings.json
 D:\attendence_mnagement\backend1\studentBackend\bin\Debug\net8.0\studentBackend.exe
 D:\attendence_mnagement\backend1\studentBackend\bin\Debug\net8.0\studentBackend.deps.json
 D:\attendence_mnagement\backend1\studentBackend\bin\Debug\net8.0\studentBackend.runtimeconfig.json
 D:\attendence_mnagement\backend1\studentBackend\bin\Debug\net8.0\studentBackend.dll
 D:\attendence_mnagement\backend1\studentBackend\bin\Debug\net8.0\studentBackend.pdb
+D:\attendence_mnagement\backend1\studentBackend\bin\Debug\net8.0\FubarCoder.RestSharp.Portable.Core.dll
+D:\attendence_mnagement\backend1\studentBackend\bin\Debug\net8.0\FubarCoder.RestSharp.Portable.HttpClient.dll
 D:\attendence_mnagement\backend1\studentBackend\bin\Debug\net8.0\Humanizer.dll
+D:\attendence_mnagement\backend1\studentBackend\bin\Debug\net8.0\JsonSubTypes.dll
 D:\attendence_mnagement\backend1\studentBackend\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
 D:\attendence_mnagement\backend1\studentBackend\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
 D:\attendence_mnagement\backend1\studentBackend\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
@@ -27,7 +26,9 @@ D:\attendence_mnagement\backend1\studentBackend\bin\Debug\net8.0\Microsoft.Exten
 D:\attendence_mnagement\backend1\studentBackend\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
 D:\attendence_mnagement\backend1\studentBackend\bin\Debug\net8.0\Mono.TextTemplating.dll
 D:\attendence_mnagement\backend1\studentBackend\bin\Debug\net8.0\MySqlConnector.dll
+D:\attendence_mnagement\backend1\studentBackend\bin\Debug\net8.0\Newtonsoft.Json.dll
 D:\attendence_mnagement\backend1\studentBackend\bin\Debug\net8.0\Pomelo.EntityFrameworkCore.MySql.dll
+D:\attendence_mnagement\backend1\studentBackend\bin\Debug\net8.0\sib_api_v3_sdk.dll
 D:\attendence_mnagement\backend1\studentBackend\bin\Debug\net8.0\System.CodeDom.dll
 D:\attendence_mnagement\backend1\studentBackend\bin\Debug\net8.0\System.Composition.AttributedModel.dll
 D:\attendence_mnagement\backend1\studentBackend\bin\Debug\net8.0\System.Composition.Convention.dll
@@ -87,7 +88,12 @@ D:\attendence_mnagement\backend1\studentBackend\bin\Debug\net8.0\tr\Microsoft.Co
 D:\attendence_mnagement\backend1\studentBackend\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
 D:\attendence_mnagement\backend1\studentBackend\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
 D:\attendence_mnagement\backend1\studentBackend\obj\Debug\net8.0\studentBackend.csproj.AssemblyReference.cache
+D:\attendence_mnagement\backend1\studentBackend\obj\Debug\net8.0\studentBackend.GeneratedMSBuildEditorConfig.editorconfig
+D:\attendence_mnagement\backend1\studentBackend\obj\Debug\net8.0\studentBackend.AssemblyInfoInputs.cache
+D:\attendence_mnagement\backend1\studentBackend\obj\Debug\net8.0\studentBackend.AssemblyInfo.cs
+D:\attendence_mnagement\backend1\studentBackend\obj\Debug\net8.0\studentBackend.csproj.CoreCompileInputs.cache
 D:\attendence_mnagement\backend1\studentBackend\obj\Debug\net8.0\studentBackend.MvcApplicationPartsAssemblyInfo.cache
+D:\attendence_mnagement\backend1\studentBackend\obj\Debug\net8.0\studentBackend.sourcelink.json
 D:\attendence_mnagement\backend1\studentBackend\obj\Debug\net8.0\staticwebassets.build.json
 D:\attendence_mnagement\backend1\studentBackend\obj\Debug\net8.0\staticwebassets.development.json
 D:\attendence_mnagement\backend1\studentBackend\obj\Debug\net8.0\staticwebassets\msbuild.studentBackend.Microsoft.AspNetCore.StaticWebAssets.props
@@ -102,4 +108,3 @@ D:\attendence_mnagement\backend1\studentBackend\obj\Debug\net8.0\refint\studentB
 D:\attendence_mnagement\backend1\studentBackend\obj\Debug\net8.0\studentBackend.pdb
 D:\attendence_mnagement\backend1\studentBackend\obj\Debug\net8.0\studentBackend.genruntimeconfig.cache
 D:\attendence_mnagement\backend1\studentBackend\obj\Debug\net8.0\ref\studentBackend.dll
-D:\attendence_mnagement\backend1\studentBackend\bin\Debug\net8.0\appsettings.json

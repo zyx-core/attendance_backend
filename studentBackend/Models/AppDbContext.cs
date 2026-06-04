@@ -4,6 +4,8 @@ namespace StudentAttendance.Models
 {
     public class AppDbContext : DbContext
     {
+
+        public DbSet<Notification> Notifications { get; set; }
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
@@ -15,4 +17,5 @@ namespace StudentAttendance.Models
         // public DbSet<Student> Students { get; set; }
         // public DbSet<Attendance> Attendances { get; set; }
     }
+    
 }

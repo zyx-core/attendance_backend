@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using StudentAttendance.Models;
 using StudentAttendance.DTOs;
-using StudentAttendance.Models;
+using StudentAttendance.Models; // Kept single namespace usage cleanly here
 
 namespace StudentAttendance.Services
 {
