@@ -13,10 +13,12 @@ namespace StudentAttendance.Services
     public class AuthService : IAuthService
     {
         private readonly AppDbContext _context;
+        private readonly IConfiguration _configuration;
 
-        public AuthService(AppDbContext context)
+        public AuthService(AppDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         public async Task<bool> RegisterTeacherAsync(RegisterTeacherDto dto)
@@ -91,18 +93,35 @@ namespace StudentAttendance.Services
                 return null;
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var secretKey = Environment.GetEnvironmentVariable("JWT_SECRET") ?? "this_is_a_fallback_secret_key_that_must_be_long_enough_for_hmac_sha256";
+            var secretKey = Environment.GetEnvironmentVariable("JWT_SECRET");
+            if (string.IsNullOrWhiteSpace(secretKey))
+            {
+                secretKey = _configuration["Jwt:Secret"];
+            }
+
+            if (string.IsNullOrWhiteSpace(secretKey))
+            {
+                secretKey = "this_is_a_development_secret_key_for_local_sams_only";
+            }
+
             var key = Encoding.ASCII.GetBytes(secretKey);
+            var issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? _configuration["Jwt:Issuer"];
+            var audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? _configuration["Jwt:Audience"];
+            issuer = string.IsNullOrWhiteSpace(issuer) ? null : issuer;
+            audience = string.IsNullOrWhiteSpace(audience) ? null : audience;
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name, user.Email),
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(ClaimTypes.Role, user.Role)
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
+                Issuer = issuer,
+                Audience = audience,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 

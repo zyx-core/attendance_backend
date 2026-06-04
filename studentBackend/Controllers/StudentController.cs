@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using StudentAttendance.DTOs;
 using StudentAttendance.Services;
 
@@ -6,6 +7,7 @@ namespace StudentAttendance.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Policy = "TeacherOnly")]
     public class StudentController : ControllerBase
     {
         private readonly IStudentService _studentService;

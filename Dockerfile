@@ -2,15 +2,11 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
 WORKDIR /src
 
-COPY *.csproj ./
+COPY studentBackend/studentBackend.csproj ./studentBackend/
+RUN dotnet restore ./studentBackend/studentBackend.csproj
 
-RUN dotnet restore
-
-COPY . ./
-
-RUN dotnet publish -c Release -o /app/publish
-
-# ---- Runtime stage ----
+COPY studentBackend/. ./studentBackend/
+RUN dotnet publish ./studentBackend/studentBackend.csproj -c Release -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 
@@ -20,6 +16,6 @@ COPY --from=build /app/publish ./
 
 EXPOSE 8080
 
-ENV ASPNETCORE_URLS=[http://+:8080]http://+:8080
+ENV ASPNETCORE_URLS=http://+:8080
 
-ENTRYPOINT ["dotnet", "ProductApi.dll"]
+ENTRYPOINT ["dotnet", "studentBackend.dll"]

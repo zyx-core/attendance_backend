@@ -7,22 +7,23 @@ namespace StudentAttendance.Services
         Task<AttendanceResponseDto> MarkAttendanceAsync(
             CreateAttendanceDto dto);
 
-        Task<bool> UpdateAttendanceAsync(
+        Task<AttendanceResponseDto?> UpdateAttendanceAsync(
             int id,
             CreateAttendanceDto dto);
 
         Task<IEnumerable<AttendanceResponseDto>>
             GetAttendanceHistoryAsync(int studentId);
 
-        Task<double> GetAttendancePercentageAsync(
+        Task<AttendancePercentageDto> GetAttendancePercentageAsync(
             int studentId);
 
-        Task<double> GetClassAttendanceAverageAsync();
+        Task<ClassAverageAttendanceDto> GetClassAttendanceAverageAsync(
+            string? className);
 
-        Task<object> GetDailyReportAsync(
+        Task<DailyAttendanceReportDto> GetDailyReportAsync(
             DateTime date);
 
-        Task<object> GetMonthlyReportAsync(
+        Task<MonthlyAttendanceReportDto> GetMonthlyReportAsync(
             int month,
             int year);
     }

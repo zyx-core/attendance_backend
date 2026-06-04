@@ -49,7 +49,7 @@ namespace StudentAttendance.Services
             };
         }
 
-        public async Task<bool> UpdateAttendanceAsync(
+        public async Task<AttendanceResponseDto?> UpdateAttendanceAsync(
             int id,
             CreateAttendanceDto dto)
         {
@@ -57,15 +57,23 @@ namespace StudentAttendance.Services
                 await _context.Attendances.FindAsync(id);
 
             if (attendance == null)
-                return false;
+                return null;
 
+            attendance.StudentId = dto.StudentId;
             attendance.Date = dto.Date;
             attendance.IsPresent = dto.IsPresent;
             attendance.Remarks = dto.Remarks;
 
             await _context.SaveChangesAsync();
 
-            return true;
+            return new AttendanceResponseDto
+            {
+                Id = attendance.Id,
+                StudentId = attendance.StudentId,
+                Date = attendance.Date,
+                IsPresent = attendance.IsPresent,
+                Remarks = attendance.Remarks
+            };
         }
 
         public async Task<IEnumerable<AttendanceResponseDto>>
@@ -85,61 +93,92 @@ namespace StudentAttendance.Services
                 .ToListAsync();
         }
 
-        public async Task<double>
+        public async Task<AttendancePercentageDto>
             GetAttendancePercentageAsync(int studentId)
         {
             var totalDays = await _context.Attendances
                 .CountAsync(a => a.StudentId == studentId);
-
-            if (totalDays == 0)
-                return 0;
 
             var presentDays = await _context.Attendances
                 .CountAsync(a =>
                     a.StudentId == studentId &&
                     a.IsPresent);
 
-            return Math.Round(
-                (double)presentDays / totalDays * 100,
-                2);
+            if (totalDays == 0)
+            {
+                return new AttendancePercentageDto
+                {
+                    StudentId = studentId,
+                    TotalDays = 0,
+                    PresentDays = 0,
+                    AbsentDays = 0,
+                    AttendancePercentage = 0
+                };
+            }
+
+            return new AttendancePercentageDto
+            {
+                StudentId = studentId,
+                TotalDays = totalDays,
+                PresentDays = presentDays,
+                AbsentDays = totalDays - presentDays,
+                AttendancePercentage = Math.Round((double)presentDays / totalDays * 100, 2)
+            };
         }
 
-        public async Task<double>
-            GetClassAttendanceAverageAsync()
+        public async Task<ClassAverageAttendanceDto>
+            GetClassAttendanceAverageAsync(string? className)
         {
-            var totalRecords =
-                await _context.Attendances.CountAsync();
+            var studentQuery = _context.Students.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(className))
+            {
+                var normalizedClass = className.Trim().ToLower();
+                studentQuery = studentQuery.Where(student => student.ClassName.ToLower() == normalizedClass);
+            }
+
+            var studentIds = await studentQuery.Select(student => student.Id).ToListAsync();
+            var totalStudents = studentIds.Count;
+            var attendanceQuery = _context.Attendances.Where(attendance => studentIds.Contains(attendance.StudentId));
+
+            var totalRecords = await attendanceQuery.CountAsync();
 
             if (totalRecords == 0)
-                return 0;
+            {
+                return new ClassAverageAttendanceDto
+                {
+                    ClassName = className,
+                    TotalStudents = totalStudents,
+                    AverageAttendancePercentage = 0
+                };
+            }
 
-            var presentRecords =
-                await _context.Attendances
-                    .CountAsync(a => a.IsPresent);
+            var presentRecords = await attendanceQuery.CountAsync(a => a.IsPresent);
 
-            return Math.Round(
-                (double)presentRecords /
-                totalRecords * 100,
-                2);
+            return new ClassAverageAttendanceDto
+            {
+                ClassName = className,
+                TotalStudents = totalStudents,
+                AverageAttendancePercentage = Math.Round((double)presentRecords / totalRecords * 100, 2)
+            };
         }
 
-        public async Task<object>
+        public async Task<DailyAttendanceReportDto>
             GetDailyReportAsync(DateTime date)
         {
             var records = await _context.Attendances
                 .Where(a => a.Date.Date == date.Date)
                 .ToListAsync();
 
-            return new
+            return new DailyAttendanceReportDto
             {
                 Date = date,
                 TotalStudents = records.Count,
-                Present = records.Count(x => x.IsPresent),
-                Absent = records.Count(x => !x.IsPresent)
+                TotalPresent = records.Count(x => x.IsPresent),
+                TotalAbsent = records.Count(x => !x.IsPresent)
             };
         }
 
-        public async Task<object>
+        public async Task<MonthlyAttendanceReportDto>
             GetMonthlyReportAsync(
                 int month,
                 int year)
@@ -150,13 +189,19 @@ namespace StudentAttendance.Services
                     a.Date.Year == year)
                 .ToListAsync();
 
-            return new
+            var totalRecords = records.Count;
+            var presentCount = records.Count(x => x.IsPresent);
+
+            return new MonthlyAttendanceReportDto
             {
                 Month = month,
                 Year = year,
-                TotalRecords = records.Count,
-                Present = records.Count(x => x.IsPresent),
-                Absent = records.Count(x => !x.IsPresent)
+                TotalWorkingDays = totalRecords,
+                PresentCount = presentCount,
+                AbsentCount = records.Count(x => !x.IsPresent),
+                AverageAttendancePercentage = totalRecords == 0
+                    ? 0
+                    : Math.Round((double)presentCount / totalRecords * 100, 2)
             };
         }
     }

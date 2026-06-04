@@ -1,5 +1,6 @@
 using System.Text;
 using DotNetEnv;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -10,9 +11,11 @@ using StudentAttendance.Services;
 Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
-var frontendOrigins = builder.Configuration
-    .GetSection("Frontend:Origins")
-    .Get<string[]>() ?? ["http://localhost:4200", "http://127.0.0.1:4200"];
+var frontendOriginsFromEnv = Environment.GetEnvironmentVariable("FRONTEND_ORIGINS");
+var frontendOrigins = !string.IsNullOrWhiteSpace(frontendOriginsFromEnv)
+    ? frontendOriginsFromEnv.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+    : builder.Configuration.GetSection("Frontend:Origins").Get<string[]>()
+        ?? ["http://localhost:4200", "http://127.0.0.1:4200"];
 
 // ===== 1. Database Context Registration =====
 var configuredConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -32,6 +35,11 @@ var connectionString =
             ? $"Server={dbServer};Port={dbPort};Database={dbName};User={dbUser};Password={dbPassword};"
             : configuredConnectionString;
 
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException("Database connection string is not configured. Set CONNECTION_STRING or DB_SERVER/DB_PORT/DB_NAME/DB_USER/DB_PASSWORD.");
+}
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(
         connectionString,
@@ -45,17 +53,6 @@ builder.Services.AddCors(options =>
     options.AddPolicy("FrontendApp", policy =>
     {
         policy.WithOrigins(frontendOrigins)
-            .SetIsOriginAllowed(origin =>
-            {
-                if (!Uri.TryCreate(origin, UriKind.Absolute, out var uri))
-                {
-                    return false;
-                }
-
-                return uri.Port == 4200 &&
-                    (uri.Host.Equals("localhost", StringComparison.OrdinalIgnoreCase) ||
-                     uri.Host.Equals("127.0.0.1", StringComparison.OrdinalIgnoreCase));
-            })
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -75,20 +72,6 @@ builder.Services.AddSwaggerGen(c =>
         Description = "Enter: Bearer your_token_here"
     });
 
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
-    });
 });
 
 // ===== 4. Service Registrations =====
@@ -99,7 +82,22 @@ builder.Services.AddScoped<IStudentService, StudentService>();
 
 // ===== 5. JWT Authentication & Authorization =====
 var secretKey = Environment.GetEnvironmentVariable("JWT_SECRET")
-    ?? "this_is_a_fallback_secret_key_that_must_be_long_enough_for_hmac_sha256";
+    ?? builder.Configuration["Jwt:Secret"]
+    ?? "";
+if (string.IsNullOrWhiteSpace(secretKey) || secretKey.Length < 32)
+{
+    if (builder.Environment.IsDevelopment())
+    {
+        secretKey = "this_is_a_development_secret_key_for_local_sams_only";
+    }
+    else
+    {
+        throw new InvalidOperationException("JWT secret must be configured and at least 32 characters in non-development environments.");
+    }
+}
+
+var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? builder.Configuration["Jwt:Issuer"];
+var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? builder.Configuration["Jwt:Audience"];
 var key = Encoding.ASCII.GetBytes(secretKey);
 
 builder.Services.AddAuthentication(options =>
@@ -115,18 +113,22 @@ builder.Services.AddAuthentication(options =>
     {
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(key),
-        ValidateIssuer = false,
-        ValidateAudience = false
+        ValidateIssuer = !string.IsNullOrWhiteSpace(jwtIssuer),
+        ValidIssuer = jwtIssuer,
+        ValidateAudience = !string.IsNullOrWhiteSpace(jwtAudience),
+        ValidAudience = jwtAudience,
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.FromMinutes(2)
     };
 });
 
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("TeacherOnly",
-        policy => policy.RequireAssertion(_ => true));
+        policy => policy.RequireRole("Teacher"));
 
     options.AddPolicy("AllRoles",
-        policy => policy.RequireAssertion(_ => true));
+        policy => policy.RequireRole("Teacher", "Parent"));
 });
 
 var app = builder.Build();
@@ -137,6 +139,30 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+else
+{
+    app.UseExceptionHandler(errorApp =>
+    {
+        errorApp.Run(async context =>
+        {
+            var exceptionHandler = context.Features.Get<IExceptionHandlerFeature>();
+            var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+            if (exceptionHandler?.Error != null)
+            {
+                logger.LogError(exceptionHandler.Error, "Unhandled API exception");
+            }
+
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            context.Response.ContentType = "application/problem+json";
+            await context.Response.WriteAsJsonAsync(new
+            {
+                type = "https://httpstatuses.com/500",
+                title = "An unexpected error occurred.",
+                status = StatusCodes.Status500InternalServerError
+            });
+        });
+    });
 }
 
 app.UseCors("FrontendApp");

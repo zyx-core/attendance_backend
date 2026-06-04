@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using StudentAttendance.DTOs;
 using StudentAttendance.Services;
 
@@ -6,6 +7,7 @@ namespace StudentAttendance.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Policy = "TeacherOnly")]
     public class AttendanceController : ControllerBase
     {
         private readonly IAttendanceService
@@ -48,7 +50,7 @@ namespace StudentAttendance.Controllers
                 await _attendanceService
                     .UpdateAttendanceAsync(id, dto);
 
-            if (!updated)
+            if (updated == null)
             {
                 return NotFound(new
                 {
@@ -56,11 +58,7 @@ namespace StudentAttendance.Controllers
                 });
             }
 
-            return Ok(new
-            {
-                message =
-                    "Attendance updated successfully"
-            });
+            return Ok(updated);
         }
 
         [HttpGet("student/{studentId}")]
@@ -82,25 +80,18 @@ namespace StudentAttendance.Controllers
                 await _attendanceService
                     .GetAttendancePercentageAsync(studentId);
 
-            return Ok(new
-            {
-                StudentId = studentId,
-                AttendancePercentage = percentage
-            });
+            return Ok(percentage);
         }
 
         [HttpGet("class-average")]
         public async Task<IActionResult>
-            GetClassAverage()
+            GetClassAverage(string? className)
         {
             var average =
                 await _attendanceService
-                    .GetClassAttendanceAverageAsync();
+                    .GetClassAttendanceAverageAsync(className);
 
-            return Ok(new
-            {
-                ClassAttendanceAverage = average
-            });
+            return Ok(average);
         }
 
         [HttpGet("daily")]

@@ -1,0 +1,7 @@
+**/bin/
+**/obj/
+**/tmp-build/
+**/tmp-obj/
+.git/
+.env
+Dockerfile
