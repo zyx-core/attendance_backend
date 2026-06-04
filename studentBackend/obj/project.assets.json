@@ -2492,23 +2492,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\arjun.c\\.nuget\\packages\\": {},
+    "C:\\Users\\jonadh.ef\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Team_project\\attendance_backend\\studentBackend\\studentBackend.csproj",
+      "projectUniqueName": "C:\\Users\\jonadh.ef\\OneDrive - NeST Group\\Documents\\codes\\SAMS\\backend\\attendance_backend\\studentBackend\\studentBackend.csproj",
       "projectName": "studentBackend",
-      "projectPath": "C:\\Team_project\\attendance_backend\\studentBackend\\studentBackend.csproj",
-      "packagesPath": "C:\\Users\\arjun.c\\.nuget\\packages\\",
-      "outputPath": "C:\\Team_project\\attendance_backend\\studentBackend\\obj\\",
+      "projectPath": "C:\\Users\\jonadh.ef\\OneDrive - NeST Group\\Documents\\codes\\SAMS\\backend\\attendance_backend\\studentBackend\\studentBackend.csproj",
+      "packagesPath": "C:\\Users\\jonadh.ef\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\jonadh.ef\\OneDrive - NeST Group\\Documents\\codes\\SAMS\\backend\\attendance_backend\\studentBackend\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\arjun.c\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\jonadh.ef\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
