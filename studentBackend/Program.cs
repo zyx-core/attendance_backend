@@ -4,6 +4,7 @@ using StudentAttendance.Models;
 using StudentAttendance.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+var frontendOrigin = builder.Configuration["Frontend:Origin"] ?? "http://localhost:4200";
 
 // ===== 1. Database Context Registration =====
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -16,6 +17,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // ===== 2. Controller & Routing Services =====
 builder.Services.AddControllers();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("FrontendApp", policy =>
+    {
+        policy.WithOrigins(frontendOrigin)
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 // ===== 3. Swagger Services =====
 builder.Services.AddEndpointsApiExplorer();
@@ -24,6 +34,7 @@ builder.Services.AddSwaggerGen();
 // ===== 4. Service Registrations =====
 builder.Services.AddScoped<ILeaveService, LeaveService>();
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
+builder.Services.AddScoped<IStudentService, StudentService>();
 
 // ===== 5. Basic Auth & Authorization Layout =====
 builder.Services.AddAuthorization(options =>
@@ -41,27 +52,14 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-
-    // Swagger
     app.UseSwagger();
     app.UseSwaggerUI();
-}if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
 }
 
-app.UseSwagger();
-app.UseSwaggerUI();
-
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseCors("FrontendApp");
 app.UseAuthorization();
-app.MapControllers();
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-// Maps controller routes
 app.MapControllers();
 
 // ===== 7. Execution Loop =====
