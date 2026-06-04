@@ -1,3 +1,4 @@
+
 # 📚 Student Attendance System
 
 A comprehensive Student Attendance System developed using **ASP.NET Core Web API**. The application provides secure JWT authentication, attendance tracking, leave management, student information management, and role-based access control for teachers and parents.
@@ -51,6 +52,15 @@ The Student Attendance System is designed to digitize and streamline attendance 
 - Entity Framework Core
 - JWT Authentication
 - SQL Server
+
+
+ 
+ 
+ 
+ <img width="1912" height="672" alt="docker" src="https://github.com/user-attachments/assets/3400679e-1fc1-46be-9f71-36d4e457c18d" />
+
+
+
 
 ## ⚙️ Installation
 
