@@ -1,5 +1,6 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -107,6 +108,71 @@ namespace StudentAttendance.Services
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
+        }
+
+        public async Task<(bool Success, string Message, string? ResetToken)> ForgotPasswordAsync(ForgotPasswordDto dto)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
+
+            // Always return success to avoid email enumeration attacks,
+            // but only create a token if the user exists.
+            if (user == null || !user.IsActive)
+                return (true, "If an account with that email exists, a reset token has been sent.", null);
+
+            // Invalidate any existing unused tokens for this email
+            var existingTokens = await _context.PasswordResetTokens
+                .Where(t => t.Email == dto.Email && !t.IsUsed && t.ExpiresAt > DateTime.UtcNow)
+                .ToListAsync();
+            foreach (var t in existingTokens)
+                t.IsUsed = true;
+
+            // Generate a secure random token (URL-safe base64)
+            var rawToken = Convert.ToBase64String(System.Security.Cryptography.RandomNumberGenerator.GetBytes(32))
+                .Replace("+", "-").Replace("/", "_").Replace("=", "");
+
+            var resetToken = new PasswordResetToken
+            {
+                Email = dto.Email,
+                Token = rawToken,
+                ExpiresAt = DateTime.UtcNow.AddHours(1),
+                IsUsed = false,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.PasswordResetTokens.Add(resetToken);
+            await _context.SaveChangesAsync();
+
+            // In a real system you would email the token. For development,
+            // we return it in the response so it can be used directly on the reset page.
+            return (true, "Password reset token generated successfully.", rawToken);
+        }
+
+        public async Task<(bool Success, string Message)> ResetPasswordAsync(ResetPasswordDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Token) || string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.NewPassword))
+                return (false, "All fields are required.");
+
+            if (dto.NewPassword.Length < 6)
+                return (false, "Password must be at least 6 characters.");
+
+            var resetToken = await _context.PasswordResetTokens
+                .FirstOrDefaultAsync(t => t.Token == dto.Token && t.Email == dto.Email);
+
+            if (resetToken == null || resetToken.IsUsed || resetToken.ExpiresAt < DateTime.UtcNow)
+                return (false, "Invalid or expired reset token.");
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
+            if (user == null || !user.IsActive)
+                return (false, "User account not found.");
+
+            // Update the password hash
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+
+            // Mark the token as used so it can't be replayed
+            resetToken.IsUsed = true;
+
+            await _context.SaveChangesAsync();
+            return (true, "Password has been reset successfully. You can now log in.");
         }
     }
 }

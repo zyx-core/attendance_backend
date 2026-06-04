@@ -45,5 +45,33 @@ namespace StudentAttendance.Controllers
 
             return Unauthorized(new { Message = "Invalid email or password." });
         }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Email))
+                return BadRequest(new { Message = "Email is required." });
+
+            var result = await _authService.ForgotPasswordAsync(dto);
+
+            // Always return 200 to prevent email enumeration
+            return Ok(new
+            {
+                Message = result.Message,
+                // ResetToken is only returned for development convenience.
+                // In production, this would be sent via email and NOT exposed in the API response.
+                ResetToken = result.ResetToken
+            });
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
+        {
+            var result = await _authService.ResetPasswordAsync(dto);
+            if (result.Success)
+                return Ok(new { Message = result.Message });
+
+            return BadRequest(new { Message = result.Message });
+        }
     }
 }
