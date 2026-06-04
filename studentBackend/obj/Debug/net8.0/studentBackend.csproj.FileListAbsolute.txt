@@ -323,3 +323,9 @@ C:\Users\jonadh.ef\OneDrive - NeST Group\Documents\codes\SAMS\backend\attendance
 C:\Users\jonadh.ef\OneDrive - NeST Group\Documents\codes\SAMS\backend\attendance_backend\studentBackend\obj\Debug\net8.0\studentBackend.pdb
 C:\Users\jonadh.ef\OneDrive - NeST Group\Documents\codes\SAMS\backend\attendance_backend\studentBackend\obj\Debug\net8.0\studentBackend.genruntimeconfig.cache
 C:\Users\jonadh.ef\OneDrive - NeST Group\Documents\codes\SAMS\backend\attendance_backend\studentBackend\obj\Debug\net8.0\ref\studentBackend.dll
+C:\Users\jonadh.ef\OneDrive - NeST Group\Documents\codes\SAMS\tmp-build\studentBackend\appsettings.json
+C:\Users\jonadh.ef\OneDrive - NeST Group\Documents\codes\SAMS\tmp-build\studentBackend\studentBackend.exe
+C:\Users\jonadh.ef\OneDrive - NeST Group\Documents\codes\SAMS\tmp-build\studentBackend\studentBackend.deps.json
+C:\Users\jonadh.ef\OneDrive - NeST Group\Documents\codes\SAMS\tmp-build\studentBackend\studentBackend.runtimeconfig.json
+C:\Users\jonadh.ef\OneDrive - NeST Group\Documents\codes\SAMS\tmp-build\studentBackend\studentBackend.dll
+C:\Users\jonadh.ef\OneDrive - NeST Group\Documents\codes\SAMS\tmp-build\studentBackend\studentBackend.pdb

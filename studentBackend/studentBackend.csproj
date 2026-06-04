@@ -16,4 +16,19 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="tmp-obj\**\*.cs" />
+    <Content Remove="tmp-obj\**\*" />
+    <None Remove="tmp-obj\**\*" />
+    <Compile Remove="tmp-build\**\*.cs" />
+    <Content Remove="tmp-build\**\*" />
+    <None Remove="tmp-build\**\*" />
+    <Compile Remove=".tmp-obj\**\*.cs" />
+    <Content Remove=".tmp-obj\**\*" />
+    <None Remove=".tmp-obj\**\*" />
+    <Compile Remove=".tmp-build\**\*.cs" />
+    <Content Remove=".tmp-build\**\*" />
+    <None Remove=".tmp-build\**\*" />
+  </ItemGroup>
+
 </Project>
