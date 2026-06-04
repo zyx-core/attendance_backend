@@ -1,21 +1,25 @@
 using System.Text;
+using DotNetEnv;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;        // Fixed: was using Microsoft.OpenApi
 using StudentAttendance.Models;
 using StudentAttendance.Services;
 
+Env.Load();
+
 var builder = WebApplication.CreateBuilder(args);
 
-// ===== 1. Database Context Registration =====
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
+// Database Configuration
+var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(
         connectionString,
         ServerVersion.AutoDetect(connectionString)
     ));
 
-// ===== 2. Controller & Routing Services =====
-builder.Services.AddControllers();
+// CORS Policy
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -26,40 +30,96 @@ builder.Services.AddCors(options =>
     });
 });
 
-// ===== 3. Swagger Services =====
+// Controllers & API Explorer
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
-// ===== 4. Service Registrations =====
+// Swagger with JWT Support
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter: Bearer your_token_here"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
+
+// Services
 builder.Services.AddScoped<ILeaveService, LeaveService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 
-// ===== 5. Basic Auth & Authorization Layout =====
+// JWT Authentication
+var secretKey = Environment.GetEnvironmentVariable("JWT_SECRET")
+    ?? "this_is_a_fallback_secret_key_that_must_be_long_enough_for_hmac_sha256";
+
+var key = Encoding.ASCII.GetBytes(secretKey);
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = false,
+        ValidateAudience = false
+    };
+});
+
+// Authorization Policies
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("TeacherOnly",
-        policy => policy.RequireAssertion(_ => true));
-
-    options.AddPolicy("AllRoles",
-        policy => policy.RequireAssertion(_ => true));
+    options.AddPolicy("TeacherOnly", policy => policy.RequireAssertion(_ => true));
+    options.AddPolicy("AllRoles", policy => policy.RequireAssertion(_ => true));
 });
 
 var app = builder.Build();
 
-// ===== 6. HTTP Pipeline Configuration =====
+// Middleware Pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
+// app.UseHttpsRedirection();   // Uncomment if using HTTPS in production
 app.UseCors("AllowAll");
-
-app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapGet("/", () => "Attendance API is running successfully!");
 
 app.Run();
