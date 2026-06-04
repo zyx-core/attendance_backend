@@ -16,14 +16,14 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // ===== 2. Controller & Routing Services =====
 builder.Services.AddControllers();
 
-// ===== 3. Swagger Services (For Local Endpoint Testing) =====
+// ===== 3. Swagger Services (For Endpoint Testing) =====
 builder.Services.AddEndpointsApiExplorer();
-
+builder.Services.AddSwaggerGen();
 
 // ===== 4. Core System Service Registrations =====
 builder.Services.AddScoped<ILeaveService, LeaveService>();
-
-builder.Services.AddScoped<IAnalyticsService, AnalyticsService>(); // Retained analytics setup
+ // FIXED: Added missing baseline service reference
+builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();   // Retained Analytics Module
 
 // ===== 5. Authorization Policies =====
 builder.Services.AddAuthorization(options =>
@@ -48,14 +48,21 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 // ===== 7. HTTP Pipeline Configuration =====
-
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+    
+    // Enable Swagger UI during development
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseHttpsRedirection();
 
 // CRITICAL CORRECT MIDDLEWARE ORDERING:
 app.UseRouting();
 
-// UseCors MUST always execute after routing but BEFORE mapping controllers and authorization pipelines
+// UseCors MUST always execute after routing but BEFORE mapping controllers or evaluating authorization
 app.UseCors("AllowAngularFrontend");
 
 app.UseAuthorization();
